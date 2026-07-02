@@ -1,0 +1,8 @@
+---
+- name: Install LLM CLI tools
+  become: false
+  kewlfft.aur.aur:
+    name:
+      - claude-code
+    use: yay
+    state: present

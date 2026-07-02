@@ -1,0 +1,31 @@
+---
+- name: Install Hyprland dynamic-tiling compositor packages
+  become: false
+  kewlfft.aur.aur:
+    name:
+      - hyprland
+      - hyprlock
+      - hypridle
+      - hyprpaper
+      - hyprshot
+      - waybar
+      - wofi
+      - dunst
+      - swaync
+      - grim
+      - slurp
+      - xdg-desktop-portal-hyprland
+      - polkit-kde-agent
+      - qt5-wayland
+      - qt6-wayland
+      - wl-clipboard
+      - cliphist
+      - pavucontrol
+      - blueman
+      - network-manager-applet
+      - nwg-look
+      - brightnessctl
+    use: yay
+    state: present
+
+# TODO: port modules/desktop-environments/hyprland/dotfiles/

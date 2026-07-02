@@ -1,0 +1,16 @@
+---
+- name: Install GTK/Qt themes + theming tools
+  become: false
+  kewlfft.aur.aur:
+    name:
+      - catppuccin-gtk-theme-mocha
+      - tokyonight-gtk-theme-git
+      - bibata-cursor-theme
+      - nwg-look
+      - qt5ct
+      - qt6ct
+    use: yay
+    state: present
+
+# TODO: port scripts/switch-theme.sh — write cursor + default-app settings
+# from `theming` var in host_vars using ansible.builtin.copy + gsettings.

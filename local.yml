@@ -1,0 +1,43 @@
+---
+# ansible-pull default entrypoint. Runs against the local machine, loads the
+# matching host_vars/<hostname>.yml, and applies every role in `enabled_roles`.
+- name: Configure this Arch Linux system
+  hosts: localhost
+  connection: local
+  gather_facts: true
+
+  vars_files:
+    - "host_vars/{{ ansible_hostname }}.yml"
+
+  tasks:
+    - name: Apply enabled roles
+      ansible.builtin.include_role:
+        name: "{{ enabled_role }}"
+      loop: "{{ enabled_roles }}"
+      loop_control:
+        loop_var: enabled_role
+        label: "{{ enabled_role }}"
+
+    - name: Enable configured services
+      become: true
+      ansible.builtin.systemd_service:
+        name: "{{ svc_item }}"
+        enabled: true
+        state: started
+      loop: "{{ services_enabled | default([]) }}"
+      loop_control:
+        loop_var: svc_item
+        label: "{{ svc_item }}"
+      failed_when: false
+
+    - name: Disable configured services
+      become: true
+      ansible.builtin.systemd_service:
+        name: "{{ svc_item }}"
+        enabled: false
+        state: stopped
+      loop: "{{ services_disabled | default([]) }}"
+      loop_control:
+        loop_var: svc_item
+        label: "{{ svc_item }}"
+      failed_when: false

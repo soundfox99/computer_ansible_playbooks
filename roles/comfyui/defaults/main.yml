@@ -1,0 +1,13 @@
+---
+comfyui_install_dir: "{{ ansible_env.HOME }}/ComfyUI"
+comfyui_repo: "https://github.com/comfyanonymous/ComfyUI.git"
+comfyui_repo_version: "master"
+comfyui_venv_dir: "{{ comfyui_install_dir }}/.venv"
+
+# Auto-selects the CUDA wheel index when the hardware role has flagged an
+# NVIDIA GPU; falls back to the CPU index otherwise. Override in host_vars
+# if you want a specific torch build (e.g. ROCm on AMD).
+comfyui_torch_index: >-
+  {{ 'https://download.pytorch.org/whl/cu124'
+     if (nvidia_present | default(false)) | bool
+     else 'https://download.pytorch.org/whl/cpu' }}

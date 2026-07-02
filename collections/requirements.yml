@@ -1,0 +1,11 @@
+---
+collections:
+  # Arch/pacman + generic modules (systemd, flatpak, packages)
+  - name: community.general
+    version: ">=8.0.0"
+  # AUR helper module (kewlfft.aur.aur) — uses yay/paru under the hood
+  - name: kewlfft.aur
+    version: ">=0.11.1"
+  # Vault helpers (optional; used if you migrate git-crypt encrypted files)
+  - name: community.crypto
+    version: ">=2.16.0"

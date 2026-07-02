@@ -1,0 +1,23 @@
+[Unit]
+Description=ansible-pull configuration sync for %i
+Documentation=https://github.com/soundfox99/computer_ansible_playbooks
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=%i
+Environment=HOME=/home/%i
+Environment=PATH=/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/lib/rustup/bin
+WorkingDirectory=/home/%i
+ExecStart=/usr/bin/ansible-pull \
+    -U git@github.com:soundfox99/computer_ansible_playbooks.git \
+    -d /home/%i/.ansible/pull/%H \
+    -i inventory/hosts.yml \
+    local.yml
+StandardOutput=journal
+StandardError=journal
+TimeoutStartSec=30min
+
+[Install]
+WantedBy=multi-user.target

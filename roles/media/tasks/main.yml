@@ -1,0 +1,9 @@
+---
+- name: Install media players
+  become: false
+  kewlfft.aur.aur:
+    name:
+      - vlc
+      - mpv
+    use: yay
+    state: present

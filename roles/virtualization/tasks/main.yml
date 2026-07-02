@@ -1,0 +1,26 @@
+---
+- name: Install QEMU/KVM + libvirt + VirtualBox
+  become: false
+  kewlfft.aur.aur:
+    name:
+      # QEMU / KVM via libvirt
+      - qemu-full
+      - libvirt
+      - virt-manager
+      - virt-viewer
+      - dnsmasq
+      - edk2-ovmf
+      - swtpm
+      - dmidecode
+      - openbsd-netcat
+      # VirtualBox
+      - virtualbox
+    use: yay
+    state: present
+
+- name: Add invoking user to libvirt group
+  become: true
+  ansible.builtin.user:
+    name: "{{ ansible_user_id }}"
+    groups: libvirt
+    append: true

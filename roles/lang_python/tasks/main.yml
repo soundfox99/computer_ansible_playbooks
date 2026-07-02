@@ -1,0 +1,13 @@
+---
+- name: Install Python interpreters + uv
+  become: false
+  kewlfft.aur.aur:
+    name:
+      - python
+      - python310
+      - python311
+      - python312
+      - python-pip
+      - uv
+    use: yay
+    state: present

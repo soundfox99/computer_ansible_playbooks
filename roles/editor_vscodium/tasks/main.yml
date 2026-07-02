@@ -1,0 +1,10 @@
+---
+- name: Install VSCodium
+  become: false
+  kewlfft.aur.aur:
+    name:
+      - vscodium
+    use: yay
+    state: present
+
+# TODO: port modules/editors/vscodium/scripts/install-vscodium-extensions.sh

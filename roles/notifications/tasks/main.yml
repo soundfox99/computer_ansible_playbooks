@@ -1,0 +1,9 @@
+---
+- name: Install desktop notification daemons
+  become: false
+  kewlfft.aur.aur:
+    name:
+      - dunst
+      - swaync
+    use: yay
+    state: present

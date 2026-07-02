@@ -1,0 +1,11 @@
+---
+- name: Install openssh
+  become: false
+  kewlfft.aur.aur:
+    name:
+      - openssh
+    use: yay
+    state: present
+
+# TODO: port modules/onboarding/scripts/onboarding.sh
+# (SSH key generation prompt, git-crypt unlock, docker group add).

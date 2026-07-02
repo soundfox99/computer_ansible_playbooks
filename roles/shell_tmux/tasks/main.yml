@@ -1,0 +1,11 @@
+---
+- name: Install tmux
+  become: false
+  kewlfft.aur.aur:
+    name:
+      - tmux
+    use: yay
+    state: present
+
+# TODO: port modules/shell/tmux/dotfiles/.tmux.conf -> files/.tmux.conf
+# TODO: port modules/shell/tmux/scripts/install-tpm.sh (clone TPM to ~/.tmux/plugins/tpm)

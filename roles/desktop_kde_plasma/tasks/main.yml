@@ -1,0 +1,17 @@
+---
+- name: Install KDE Plasma 6 desktop packages
+  become: false
+  kewlfft.aur.aur:
+    name:
+      - plasma-meta
+      - plasma-workspace
+      - sddm
+      - dolphin
+      - konsole
+      - kate
+      - ark
+      - kde-cli-tools
+      - polkit-kde-agent
+      - system-config-printer
+    use: yay
+    state: present

@@ -1,0 +1,16 @@
+---
+- name: Install Flatpak runtime
+  become: false
+  kewlfft.aur.aur:
+    name:
+      - flatpak
+    use: yay
+    state: present
+
+# TODO: list Flathub app IDs in host_vars and install with community.general.flatpak.
+# Example:
+#   - name: Install user-scope flatpak apps
+#     community.general.flatpak:
+#       name: "{{ flatpak_apps | default([]) }}"
+#       method: user
+#       state: present

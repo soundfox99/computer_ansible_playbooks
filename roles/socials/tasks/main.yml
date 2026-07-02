@@ -1,0 +1,8 @@
+---
+- name: Install social / messaging clients
+  become: false
+  kewlfft.aur.aur:
+    name:
+      - discord
+    use: yay
+    state: present

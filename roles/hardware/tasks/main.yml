@@ -1,0 +1,247 @@
+---
+# --- Multilib detection + enablement --------------------------------------
+
+- name: Check whether [multilib] is enabled in pacman.conf
+  become: false
+  ansible.builtin.command: grep -qE '^\[multilib\]' /etc/pacman.conf
+  register: multilib_check
+  changed_when: false
+  failed_when: false
+  check_mode: false
+
+- name: Set multilib fact
+  ansible.builtin.set_fact:
+    multilib_enabled: "{{ multilib_check.rc == 0 }}"
+
+- name: Uncomment [multilib] section in pacman.conf
+  become: true
+  ansible.builtin.replace:
+    path: /etc/pacman.conf
+    regexp: '(?m)^#\[multilib\]\n#Include = (\S+)$'
+    replace: '[multilib]\nInclude = \1'
+    backup: true
+  when: not multilib_enabled
+  register: multilib_replaced
+
+- name: Refresh pacman database after enabling multilib
+  become: true
+  community.general.pacman:
+    update_cache: true
+  when: multilib_replaced.changed | default(false)
+
+- name: Set multilib fact after enablement
+  ansible.builtin.set_fact:
+    multilib_enabled: true
+  when: multilib_replaced.changed | default(false)
+
+# --- GPU / chassis / CPU detection ----------------------------------------
+
+- name: Detect GPU vendors from lspci
+  become: false
+  ansible.builtin.shell: |
+    set -o pipefail
+    lspci -nn | grep -iE 'vga|3d controller|display' || true
+  args:
+    executable: /bin/bash
+  register: gpu_lspci
+  changed_when: false
+  check_mode: false
+
+- name: Set GPU facts
+  ansible.builtin.set_fact:
+    nvidia_present: "{{ gpu_lspci.stdout is search('NVIDIA') }}"
+    amd_gpu_present: >-
+      {{
+        gpu_lspci.stdout is search('AMD/ATI')
+        or gpu_lspci.stdout is search('Advanced Micro Devices')
+      }}
+    intel_gpu_present: "{{ gpu_lspci.stdout is search('Intel Corporation') }}"
+
+- name: Read chassis type
+  become: false
+  ansible.builtin.slurp:
+    src: /sys/class/dmi/id/chassis_type
+  register: chassis_type_raw
+  failed_when: false
+
+- name: Read chassis vendor
+  become: false
+  ansible.builtin.slurp:
+    src: /sys/class/dmi/id/chassis_vendor
+  register: chassis_vendor_raw
+  failed_when: false
+
+- name: Set chassis facts
+  ansible.builtin.set_fact:
+    chassis_type_num: >-
+      {{ (chassis_type_raw.content | b64decode | trim | int)
+         if (chassis_type_raw.content is defined) else 0 }}
+    chassis_vendor: >-
+      {{ (chassis_vendor_raw.content | b64decode | trim | lower)
+         if (chassis_vendor_raw.content is defined) else 'unknown' }}
+
+- name: Derive laptop / desktop facts
+  ansible.builtin.set_fact:
+    is_laptop: "{{ chassis_type_num | int in [8, 9, 10, 14] }}"
+    is_desktop: "{{ chassis_type_num | int in [3, 4, 6, 7] }}"
+
+- name: Determine CPU vendor
+  ansible.builtin.set_fact:
+    cpu_vendor: >-
+      {{ 'intel' if (ansible_processor | join(' ') is search('Intel'))
+         else ('amd' if (ansible_processor | join(' ') is search('AMD'))
+         else 'unknown') }}
+
+# --- Package installs -----------------------------------------------------
+
+- name: Install CPU microcode
+  become: false
+  kewlfft.aur.aur:
+    name:
+      - "{{ 'intel-ucode' if cpu_vendor == 'intel' else 'amd-ucode' }}"
+    use: yay
+    state: present
+  when: cpu_vendor in ['intel', 'amd']
+
+- name: Install baseline GPU userland
+  become: false
+  kewlfft.aur.aur:
+    name:
+      - mesa
+      - vulkan-icd-loader
+    use: yay
+    state: present
+
+- name: Install multilib baseline GPU userland
+  become: false
+  kewlfft.aur.aur:
+    name:
+      - lib32-vulkan-icd-loader
+    use: yay
+    state: present
+  when: multilib_enabled
+
+- name: Install NVIDIA driver (desktop)
+  become: false
+  kewlfft.aur.aur:
+    name:
+      - nvidia-open-dkms
+    use: yay
+    state: present
+  when: nvidia_present and is_desktop
+
+- name: Install NVIDIA driver (laptop)
+  become: false
+  kewlfft.aur.aur:
+    name:
+      - nvidia-dkms
+      - nvidia-prime
+    use: yay
+    state: present
+  when: nvidia_present and is_laptop
+
+- name: Install NVIDIA common userland + CUDA
+  become: false
+  kewlfft.aur.aur:
+    name:
+      - nvidia-utils
+      - nvidia-settings
+      - opencl-nvidia
+      - libva-nvidia-driver
+      - cuda
+      - cudnn
+    use: yay
+    state: present
+  when: nvidia_present
+
+- name: Install NVIDIA multilib userland
+  become: false
+  kewlfft.aur.aur:
+    name:
+      - lib32-nvidia-utils
+      - lib32-opencl-nvidia
+    use: yay
+    state: present
+  when: nvidia_present and multilib_enabled
+
+- name: Install AMD GPU userland
+  become: false
+  kewlfft.aur.aur:
+    name:
+      - vulkan-radeon
+      - libva-mesa-driver
+      - xf86-video-amdgpu
+    use: yay
+    state: present
+  when: amd_gpu_present
+
+- name: Install AMD GPU multilib userland
+  become: false
+  kewlfft.aur.aur:
+    name:
+      - lib32-vulkan-radeon
+      - lib32-mesa
+    use: yay
+    state: present
+  when: amd_gpu_present and multilib_enabled
+
+- name: Install Intel GPU userland
+  become: false
+  kewlfft.aur.aur:
+    name:
+      - vulkan-intel
+      - intel-media-driver
+      - libva-intel-driver
+    use: yay
+    state: present
+  when: intel_gpu_present
+
+- name: Install Intel GPU multilib userland
+  become: false
+  kewlfft.aur.aur:
+    name:
+      - lib32-vulkan-intel
+      - lib32-mesa
+    use: yay
+    state: present
+  when: intel_gpu_present and multilib_enabled
+
+- name: Install laptop power tooling
+  become: false
+  kewlfft.aur.aur:
+    name:
+      - tlp
+      - tlp-rdw
+      - powertop
+      - brightnessctl
+    use: yay
+    state: present
+  when: is_laptop
+
+- name: Enable tlp service on laptops
+  become: true
+  ansible.builtin.systemd_service:
+    name: tlp
+    enabled: true
+    state: started
+  when: is_laptop
+
+- name: Install ASUS vendor tooling
+  become: false
+  kewlfft.aur.aur:
+    name:
+      - asusctl
+      - supergfxctl
+      - rog-control-center
+    use: yay
+    state: present
+  when: chassis_vendor is search('asus')
+
+- name: Install firmware
+  become: false
+  kewlfft.aur.aur:
+    name:
+      - linux-firmware
+      - sof-firmware
+    use: yay
+    state: present

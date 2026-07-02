@@ -1,0 +1,12 @@
+---
+- name: Install bash + completion
+  become: false
+  kewlfft.aur.aur:
+    name:
+      - bash
+      - bash-completion
+    use: yay
+    state: present
+
+# TODO: port modules/shell/bash/dotfiles/.bashrc -> files/.bashrc
+# and deploy with ansible.builtin.copy to ~/.bashrc.

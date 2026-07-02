@@ -1,0 +1,4 @@
+---
+# Cross-host defaults. Override in host_vars/<hostname>.yml when a machine
+# needs different values.
+aur_helper: yay

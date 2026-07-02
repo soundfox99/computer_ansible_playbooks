@@ -1,0 +1,13 @@
+---
+- name: Install browser packages
+  become: false
+  kewlfft.aur.aur:
+    name:
+      - firefox
+      - chromium
+      - brave-bin
+    use: yay
+    state: present
+
+# TODO: port scripts/install-browser-policies.sh (extension policy JSON).
+# TODO: port modules/browsers/data/*-bookmarks.html (git-crypt encrypted).

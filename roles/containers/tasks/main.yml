@@ -1,0 +1,27 @@
+---
+- name: Install container runtimes
+  become: false
+  kewlfft.aur.aur:
+    name:
+      - docker
+      - docker-compose
+      - containerd
+    use: yay
+    state: present
+
+- name: Install NVIDIA container passthrough
+  become: false
+  kewlfft.aur.aur:
+    name:
+      - nvidia-container-toolkit
+      - nvidia-docker-compose
+    use: yay
+    state: present
+  when: nvidia_present | default(false) | bool
+
+- name: Add invoking user to docker group
+  become: true
+  ansible.builtin.user:
+    name: "{{ ansible_user_id }}"
+    groups: docker
+    append: true

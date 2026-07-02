@@ -1,0 +1,22 @@
+---
+- name: Install Niri scrollable-tiling compositor packages
+  become: false
+  kewlfft.aur.aur:
+    name:
+      - niri
+      - xwayland-satellite
+      - xdg-desktop-portal-gnome
+      - wl-clipboard
+      - wl-clip-persist
+      - cliphist
+      - brightnessctl
+      - fuzzel
+      - sway-audio-idle-inhibit-git
+      - swayidle
+      # noctalia-shell-git provides its own quickshell fork (noctalia-qs);
+      # do not also add quickshell-git — they conflict at install time.
+      - noctalia-shell-git
+    use: yay
+    state: present
+
+# TODO: port modules/desktop-environments/niri/dotfiles/ (waybar/niri configs)

@@ -1,0 +1,8 @@
+---
+- name: Install VPN clients
+  become: false
+  kewlfft.aur.aur:
+    name:
+      - mullvad-vpn-bin
+    use: yay
+    state: present

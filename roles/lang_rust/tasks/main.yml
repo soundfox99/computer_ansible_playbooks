@@ -1,0 +1,17 @@
+---
+- name: Install Rust toolchain via rustup
+  become: false
+  kewlfft.aur.aur:
+    name:
+      # rustup conflicts with the standalone `rust` package — use one or the other.
+      # rust-analyzer / rust-src are installed as rustup components, not pkgs.
+      - rustup
+      - cargo-watch
+      - mold           # fast linker
+      - cargo-binstall
+      - sccache        # compile cache; opt-in via RUSTC_WRAPPER
+    use: yay
+    state: present
+
+# TODO: port modules/programming-languages/rust/scripts/rustup-default.sh
+# (runs `rustup default stable` on first apply).

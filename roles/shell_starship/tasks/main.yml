@@ -1,0 +1,11 @@
+---
+- name: Install starship prompt
+  become: false
+  kewlfft.aur.aur:
+    name:
+      - starship
+    use: yay
+    state: present
+
+# TODO: port modules/shell/starship/dotfiles/ -> files/
+# and deploy to ~/.config/starship.toml.

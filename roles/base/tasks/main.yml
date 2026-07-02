@@ -1,0 +1,29 @@
+---
+- name: Install base system packages
+  become: false
+  kewlfft.aur.aur:
+    name:
+      - base
+      - base-devel
+      - git
+      - nano
+      - htop
+      - man-db
+      - man-pages
+      - iwd
+      - dhcpcd
+      - neofetch
+      - iptables-nft
+      - paru
+      - fzf
+      - timeshift
+    use: yay
+    state: present
+
+- name: Ensure fstrim.timer is enabled if unit exists
+  become: true
+  ansible.builtin.systemd_service:
+    name: fstrim.timer
+    enabled: true
+    state: started
+  failed_when: false

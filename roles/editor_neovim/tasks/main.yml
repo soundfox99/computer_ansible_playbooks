@@ -1,0 +1,18 @@
+---
+- name: Install Neovim + LazyVim dependencies
+  become: false
+  kewlfft.aur.aur:
+    name:
+      - neovim
+      - vim
+      - ripgrep         # telescope live_grep
+      - fd              # telescope file finder
+      - lazygit         # LazyVim's <leader>gg
+      - tree-sitter-cli # for on-the-fly parser compilation
+      - wl-clipboard    # Wayland clipboard
+      - xclip           # X11 fallback
+    use: yay
+    state: present
+
+# TODO: port modules/editors/neovim/dotfiles/nvim/ -> files/nvim/
+# with a copy task to ~/.config/nvim.

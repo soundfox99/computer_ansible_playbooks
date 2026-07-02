@@ -1,0 +1,10 @@
+---
+- name: Install Go toolchain
+  become: false
+  kewlfft.aur.aur:
+    name:
+      - go
+      - gopls
+      - delve
+    use: yay
+    state: present

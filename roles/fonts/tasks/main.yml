@@ -1,0 +1,18 @@
+---
+- name: Install system fonts
+  become: false
+  kewlfft.aur.aur:
+    name:
+      - ttf-cascadia-code-nerd
+      - ttf-font-awesome
+      - otf-ipafont
+      - noto-fonts
+      - noto-fonts-cjk
+      - noto-fonts-emoji
+      - ttf-dejavu
+      - ttf-liberation
+      - ttf-bitstream-vera
+      - gnu-free-fonts
+      - ttf-ms-fonts
+    use: yay
+    state: present

@@ -1,0 +1,13 @@
+---
+- name: Install git + GitHub CLI + git-crypt
+  become: false
+  kewlfft.aur.aur:
+    name:
+      - git
+      - github-cli
+      - git-crypt
+    use: yay
+    state: present
+
+# TODO: port modules/git-config/dotfiles/.gitconfig -> files/.gitconfig
+# and deploy with ansible.builtin.copy.

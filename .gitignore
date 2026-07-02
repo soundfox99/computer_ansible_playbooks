@@ -1,0 +1,18 @@
+# Ansible retry files (defaults already disable retry files, belt-and-braces)
+*.retry
+
+# Vault password files — never commit
+.vault_pass
+.vault_pass.txt
+
+# Locally-installed collections (use collections/requirements.yml instead)
+collections/ansible_collections/
+
+# Python venvs a developer may create for local testing
+.venv/
+venv/
+
+# Editor droppings
+.idea/
+.vscode/
+*.swp

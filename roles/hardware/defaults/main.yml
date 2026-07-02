@@ -1,0 +1,12 @@
+---
+# Facts published by this role (set via set_fact — these are the defaults
+# used before detection runs; every consumer references the fact, not this
+# default):
+#   multilib_enabled  bool
+#   cpu_vendor        "intel" | "amd" | "unknown"
+#   nvidia_present    bool
+#   amd_gpu_present   bool
+#   intel_gpu_present bool
+#   is_laptop         bool
+#   is_desktop        bool
+#   chassis_vendor    lowercase string

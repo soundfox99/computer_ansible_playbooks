@@ -1,0 +1,15 @@
+---
+- name: Install Node.js LTS + fnm
+  become: false
+  kewlfft.aur.aur:
+    name:
+      # System Node — bitwarden-cli pins this exact package via its dep.
+      - nodejs-lts-jod
+      - npm
+      # User-space multi-version manager (initialized in .bashrc).
+      - fnm
+    use: yay
+    state: present
+
+# TODO: port modules/programming-languages/nodejs/scripts/fnm-bootstrap.sh
+# (runs `fnm install --lts` on first apply).

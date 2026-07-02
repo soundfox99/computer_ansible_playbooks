@@ -1,0 +1,21 @@
+---
+- name: Install CLI utility packages
+  become: false
+  kewlfft.aur.aur:
+    name:
+      - bat
+      - fzf
+      - eza
+      - plocate
+      - tree
+      - lazydocker
+      - wget
+      - unzip
+      - less
+      - stow
+      - just
+      - bitwarden-cli
+      - github-cli
+      - tailscale
+    use: yay
+    state: present

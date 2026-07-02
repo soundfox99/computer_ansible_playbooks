@@ -1,0 +1,51 @@
+---
+# Mirrors modules/system-packages-arch-desktop/packages.lua — packages the
+# machine has picked up manually (SDDM/plasma bits, printing, pipewire,
+# btrfs tooling, etc.). Hardware-conditional pieces (microcode, GPU drivers)
+# live in the hardware role, not here.
+- name: Install manually-tracked system packages
+  become: false
+  kewlfft.aur.aur:
+    name:
+      - ark
+      - bluez
+      - bluez-utils
+      - btrfs-progs
+      - cups
+      - cups-pk-helper
+      - dhcpcd
+      - dkms
+      - dolphin
+      - efibootmgr
+      - git
+      - gst-plugin-pipewire
+      - htop
+      - iwd
+      - kate
+      - konsole
+      - libpulse
+      - linux
+      - linux-headers
+      - nano
+      - openssh
+      - pipewire
+      - pipewire-alsa
+      - pipewire-jack
+      - pipewire-pulse
+      - plasma-meta
+      - plasma-workspace
+      - sddm
+      - smartmontools
+      - sudo
+      - system-config-printer
+      - vim
+      - wget
+      - wireless_tools
+      - wireplumber
+      - xdg-utils
+      - xorg-server
+      - xorg-xinit
+      - yay
+      - zram-generator
+    use: yay
+    state: present

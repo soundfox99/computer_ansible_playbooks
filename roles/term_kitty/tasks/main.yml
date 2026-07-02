@@ -1,0 +1,11 @@
+---
+- name: Install kitty terminal
+  become: false
+  kewlfft.aur.aur:
+    name:
+      - kitty
+    use: yay
+    state: present
+
+# TODO: port modules/terminals/kitty/dotfiles/ -> files/
+# and deploy to ~/.config/kitty/.

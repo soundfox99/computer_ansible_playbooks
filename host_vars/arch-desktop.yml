@@ -1,0 +1,71 @@
+---
+description: "Personal Desktop"
+aur_helper: yay
+editor: nvim
+
+# Ordered — earlier roles run first. `hardware` must precede anything that
+# consumes the facts it sets (nvidia_present, is_laptop, chassis_vendor, etc.).
+enabled_roles:
+  - base
+  - hardware
+  - system_packages
+  - fonts
+  - theming
+  - notifications
+  - cli
+  - shell_bash
+  - shell_starship
+  - shell_tmux
+  - term_kitty
+  - editor_neovim
+  - editor_vscodium
+  - editor_office
+  - git_config
+  - lang_rust
+  - lang_go
+  - lang_python
+  - lang_nodejs
+  - lang_ruby
+  - browsers
+  - socials
+  - media
+  - torrents
+  - flatpak
+  - games
+  - containers
+  - virtualization
+  - vpns
+  - llms
+  - comfyui
+  # DEs install side-by-side; SDDM lets you pick the session at login.
+  - desktop_kde_plasma
+  - desktop_niri
+  - desktop_hyprland
+  # Interactive first-run setup last (SSH key, docker group).
+  - onboarding
+
+services_enabled:
+  - NetworkManager
+  - bluetooth
+  - cups
+  - docker
+  - containerd
+  - libvirtd
+  - sddm
+  - sshd
+  - fstrim.timer
+
+services_disabled: []
+
+theming:
+  cursor:
+    theme: bibata-modern-ice
+    size: 24
+  default_apps:
+    browser: firefox.desktop
+    text_editor: vscodium
+    file_manager: dolphin
+    video_player: mpv
+    audio_player: mpv
+    image_viewer: dolphin
+    pdf_viewer: firefox.desktop

@@ -1,0 +1,51 @@
+---
+- name: Install ComfyUI system dependencies
+  become: false
+  kewlfft.aur.aur:
+    name:
+      - python
+      - python-pip
+      - python-virtualenv
+      - git
+    use: yay
+    state: present
+
+- name: Clone ComfyUI repository
+  become: false
+  ansible.builtin.git:
+    repo: "{{ comfyui_repo }}"
+    dest: "{{ comfyui_install_dir }}"
+    version: "{{ comfyui_repo_version }}"
+    update: true
+
+- name: Create ComfyUI virtualenv
+  become: false
+  ansible.builtin.command:
+    cmd: "python -m venv {{ comfyui_venv_dir }}"
+    creates: "{{ comfyui_venv_dir }}/bin/python"
+
+- name: Bootstrap pip / setuptools / wheel inside venv
+  become: false
+  ansible.builtin.pip:
+    name:
+      - pip
+      - setuptools
+      - wheel
+    state: latest
+    virtualenv: "{{ comfyui_venv_dir }}"
+
+- name: Install PyTorch stack
+  become: false
+  ansible.builtin.pip:
+    name:
+      - torch
+      - torchvision
+      - torchaudio
+    extra_args: "--index-url {{ comfyui_torch_index }}"
+    virtualenv: "{{ comfyui_venv_dir }}"
+
+- name: Install ComfyUI Python requirements
+  become: false
+  ansible.builtin.pip:
+    requirements: "{{ comfyui_install_dir }}/requirements.txt"
+    virtualenv: "{{ comfyui_venv_dir }}"

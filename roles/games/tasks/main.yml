@@ -1,0 +1,30 @@
+---
+- name: Install gaming stack (Steam / Wine / launchers / overlays)
+  become: false
+  kewlfft.aur.aur:
+    name:
+      - steam
+      - wine
+      - wine-mono
+      - wine-gecko
+      - winetricks
+      - protontricks
+      - proton-ge-custom-bin
+      - lutris
+      - heroic-games-launcher-bin
+      - gamemode
+      - mangohud
+      - goverlay
+      - game-devices-udev
+    use: yay
+    state: present
+
+- name: Install multilib gaming overlays
+  become: false
+  kewlfft.aur.aur:
+    name:
+      - lib32-gamemode
+      - lib32-mangohud
+    use: yay
+    state: present
+  when: multilib_enabled | default(false) | bool
