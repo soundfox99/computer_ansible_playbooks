@@ -1,0 +1,21 @@
+---
+extends: default
+
+ignore: |
+  collections/ansible_collections/
+  .ansible/
+  .venv/
+
+rules:
+  line-length:
+    max: 160
+    level: warning
+  truthy:
+    allowed-values: ["true", "false", "yes", "no"]
+    check-keys: false
+  comments-indentation: disable
+  braces:
+    max-spaces-inside: 1
+  indentation:
+    spaces: 2
+    indent-sequences: true

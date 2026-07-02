@@ -1,0 +1,18 @@
+---
+exclude_paths:
+  - .git/
+  - .github/
+  - .ansible/
+  - collections/ansible_collections/
+  - .venv/
+
+# Silence rules that are noisy for a personal-config pull setup but not bugs.
+skip_list:
+  # Role directories mirror the underscore-named modules from the dcli repo.
+  - role-name
+  # `become: false` on individual tasks is intentional (see roles/*/tasks/main.yml).
+  - no-handler
+
+warn_list:
+  - experimental
+  - yaml[line-length]
